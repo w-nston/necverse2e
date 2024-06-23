@@ -1,35 +1,101 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Unity WebGL Player | NEC Metaverse</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes">
+    <title>NEC Metaverse</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
-  </head>
-  <body>
-    <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=960 height=600></canvas>
-      <div id="unity-loading-bar">
+    <style>
+@media screen and (orientation: portrait) {
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    #unity-container {
+        display: none;
+    }
+
+    #rotate-text {
+        display: block;
+        font-size: 24px;
+        text-align: center;
+        color: #ffffff;
+    }
+
+    #rotate-image {
+        display: block;
+        max-width: 90%; /* Adjust the max-width to make the image bigger */
+        height: auto;
+        margin-top: 20px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media screen and (orientation: landscape) {
+    #rotate-text,
+    #rotate-image {
+        display: none;
+    }
+}
+
+
+
+    </style>
+</head>
+<body>
+<div id="unity-container" style="width: 100%; height: 100%">
+    <canvas id="unity-canvas" width=auto height=auto></canvas>
+    <div id="unity-loading-bar">
         <div id="unity-logo"></div>
         <div id="unity-progress-bar-empty">
-          <div id="unity-progress-bar-full"></div>
+            <div id="unity-progress-bar-full"></div>
         </div>
-      </div>
-      <div id="unity-warning"> </div>
-      <div id="unity-footer">
+    </div>
+    <div id="unity-warning"> </div>
+    <div id="unity-footer">
         <div id="unity-webgl-logo"></div>
         <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">NEC Metaverse</div>
-      </div>
+        <div id="unity-build-title"></div>
     </div>
-    <script>
-      var container = document.querySelector("#unity-container");
-      var canvas = document.querySelector("#unity-canvas");
-      var loadingBar = document.querySelector("#unity-loading-bar");
-      var progressBarFull = document.querySelector("#unity-progress-bar-full");
-      var fullscreenButton = document.querySelector("#unity-fullscreen-button");
-      var warningBanner = document.querySelector("#unity-warning");
+</div>
+<div id="rotate-text">Turn device screen</div>
+<img id="rotate-image" src="Rotate.png" alt="Rotate Image">
+<script>
+    var container = document.querySelector("#unity-container");
+    var canvas = document.querySelector("#unity-canvas");
+    var loadingBar = document.querySelector("#unity-loading-bar");
+    var progressBarFull = document.querySelector("#unity-progress-bar-full");
+    var fullscreenButton = document.querySelector("#unity-fullscreen-button");
+    var warningBanner = document.querySelector("#unity-warning");
+    var rotateText = document.querySelector("#rotate-text");
+    var rotateImage = document.querySelector("#rotate-image");
+
+    // Check screen orientation on page load
+    checkOrientation();
+
+    // Listen for orientation changes
+    window.addEventListener("orientationchange", checkOrientation);
+
+    function checkOrientation() {
+        if (window.orientation === 0 || window.orientation === 180) {
+            // Portrait orientation
+            container.style.display = "none";
+            rotateText.style.display = "block";
+            rotateImage.style.display = "block";
+        } else {
+            // Landscape orientation
+            container.style.display = "block";
+            rotateText.style.display = "none";
+            rotateImage.style.display = "none";
+        }
+    }
 
       // Shows a temporary message banner/ribbon for a few seconds, or
       // a permanent error message on top of the canvas if type=='error'.
@@ -56,16 +122,15 @@
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/necverse.loader.js";
+      var loaderUrl = buildUrl + "/NECLatest.loader.js";
       var config = {
-        dataUrl: buildUrl + "/necverse.data",
-        frameworkUrl: buildUrl + "/necverse.framework.js",
-        codeUrl: buildUrl + "/necverse.wasm",
+        dataUrl: buildUrl + "/NECLatest.data",
+        frameworkUrl: buildUrl + "/NECLatest.framework.js",
+        codeUrl: buildUrl + "/NECLatest.wasm",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "NEC Metaverse",
         productVersion: "0.1",
-        showBanner: unityShowBanner,
       };
 
       // By default, Unity keeps WebGL canvas render target size matched with
@@ -89,12 +154,12 @@
         // performance, uncomment the following line:
         // config.devicePixelRatio = 1;
 
-        unityShowBanner('WebGL builds are not supported on mobile devices.');
+        unityShowBanner(' ');
       } else {
         // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
 
-        canvas.style.width = "960px";
-        canvas.style.height = "600px";
+        canvas.style.width = "100%";
+        canvas.style.height = "100%";
       }
 
       loadingBar.style.display = "block";
